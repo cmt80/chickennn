@@ -3,6 +3,7 @@
 --game ends when animal hits bottom
 
 function love.load()
+    love.graphics.setBackgroundColor(0.3, 0.5, 0.7)
   chickenFace = love.graphics.newImage("chicken.png")
   backgroundImage = love.graphics.newImage("bg.png")
   --setting image for powerup
