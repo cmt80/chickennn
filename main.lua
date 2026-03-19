@@ -5,6 +5,17 @@
 function love.load()
   chickenFace = love.graphics.newImage("chicken.png")
   backgroundImage = love.graphics.newImage("bg.png")
+  --setting image for powerup
+  powerupImage = love.graphics.newImage("power.png")
+
+  chickenFallSpeed = 80
+  --powerup object
+  powerup = {x = 500, y = 500, width = powerupImage:getWidth(), height = powerupImage:getHeight()}
+
+  --in seconds
+  powerupTime = 0 
+  -- if powerup isnt clicked in 3 seconds, it'll move
+  powerupDelay = 3  
 
   math.randomseed(os.time())
   math.random(); math.random(); math.random()
@@ -38,6 +49,17 @@ function love.mousepressed(x, y, button, istouch)
       end
     end
   end
+
+  -- if the powerup has been clicked by player
+  if x >= powerup.x and x <= powerup.x + powerup.width and y >= powerup.y and y <= powerup.y + powerup.height then
+
+    -- make "chickens" fall faster
+    chickenFallSpeed = chickenFallSpeed + 60
+
+    -- then move it to a random spot
+    powerup.x = math.random(0, love.graphics.getWidth() - powerup.width)
+    powerup.y = math.random(0, love.graphics.getHeight() - powerup.height)
+  end
 end
 
 -------------------------------------------------
@@ -51,8 +73,18 @@ function love.update(dt)
       love.event.quit()
     end
     --chickens move down 
-    starty[i] = starty[i] + 80 * dt
+    starty[i] = starty[i] + chickenFallSpeed * dt
   end
+
+    -- if the 3 seconds runs out, move the powerup somewhere else
+    powerupTime = powerupTime + dt
+    if powerupTime >= powerupDelay then
+        powerup.x = math.random(0, love.graphics.getWidth() - powerup.width)
+        powerup.y = math.random(0, love.graphics.getHeight() - powerup.height)
+        powerupTime = 0
+    end
+
+
 end
 
 -------------------------------------------------
@@ -64,4 +96,6 @@ function love.draw()
   for i, v in ipairs(startx) do
     love.graphics.draw(chickenFace, startx[i], starty[i])
   end
+  -- draw powerup
+  love.graphics.draw(powerupImage, powerup.x, powerup.y)
 end
